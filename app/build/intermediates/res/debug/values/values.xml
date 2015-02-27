@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/home/ted/projects/Android/Assignment3/app/src/main/res/values/dimens.xml -->
+    <eat-comment/>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <!-- From: file:/home/ted/projects/Android/Assignment3/app/src/main/res/values/refs.xml -->
+    <eat-comment/>
+    <item name="fragment_professor" type="layout">@layout/fragment_professor_list</item>
+    <!-- From: file:/home/ted/projects/Android/Assignment3/app/src/main/res/values/strings.xml -->
+    <eat-comment/>
+    <string name="action_settings">Settings</string>
+    <string name="app_name">Assignment3</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_professor_detail">ProfessorDetailActivity</string>
+    <!-- From: file:/home/ted/projects/Android/Assignment3/app/src/main/res/values/styles.xml -->
+    <eat-comment/>
+    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+</resources>
