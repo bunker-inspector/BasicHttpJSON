@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -24,17 +23,17 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ProfessorListFragment extends ListFragment{
+public class ProfessorListFragment extends ListFragment {
 
     //UNIT TEST REMOVE ME LATER
     private static final String DUMMY_JSON_ARRAY = "[{\"firstName\":\"Ted\",\"id\":43,\"lastName\":\"Kassen\"},{\"firstName\":\"Cameron\",\"id\":21,\"lastName\":\"Nouri\"},{\"firstName\":\"Marisa\",\"id\":306,\"lastName\":\"Till\"}]";
 
-    private static final String PARAM_PROF_LIST         = "paramproflist",
-                                STATE_POPULATED         = "statepopulated",
-                                EXTRA_PROF_SELECTED     = "extraprofselected",
-                                PACKAGE_NAME            = "com.cs646.ted.assignment3",
-                                PROF_DETAIL_ACTIVITY    =
-                                        "com.cs646.ted.assignment3.ProfessorDetailActivity";
+    private static final String PARAM_PROF_LIST = "paramproflist",
+            STATE_POPULATED = "statepopulated",
+            EXTRA_PROF_SELECTED = "extraprofselected",
+            PACKAGE_NAME = "com.cs646.ted.assignment3",
+            PROF_DETAIL_ACTIVITY =
+                    "com.cs646.ted.assignment3.ProfessorDetailActivity";
 
 
     private String mListURL;
@@ -77,7 +76,7 @@ public class ProfessorListFragment extends ListFragment{
         FetchItemsTask fetchItemsTask = new FetchItemsTask();
         fetchItemsTask.execute();
 
-        if(!mPopulated) {
+        if (!mPopulated) {
             mWaitDialog = ProgressDialog.show(getActivity(), getString(R.string.loading_title),
                     getString(R.string.please_wait));
         }
@@ -92,11 +91,10 @@ public class ProfessorListFragment extends ListFragment{
 
         try {
             int idOfSelectedProfessor =
-                    ((Integer)((JSONObject) mProfessorArray.get(position)).get("id"));
+                    ((Integer) ((JSONObject) mProfessorArray.get(position)).get("id"));
             go.putExtra(EXTRA_PROF_SELECTED, idOfSelectedProfessor);
             startActivity(go);
-        }
-        catch (JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
@@ -104,24 +102,24 @@ public class ProfessorListFragment extends ListFragment{
     }
 
     //Fetches JSONArray from URL
-    private class FetchItemsTask extends AsyncTask<Void, Void, Void>{
+    private class FetchItemsTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             if (!mPopulated) {
-                    HttpClient httpClient = new DefaultHttpClient();
-                    HttpGet httpGet = new HttpGet(mListURL);
-                    HttpResponse response;
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpGet httpGet = new HttpGet(mListURL);
+                HttpResponse response;
 
-                    try {
-                        response = httpClient.execute(httpGet);
+                try {
+                    response = httpClient.execute(httpGet);
 
-                        Log.wtf("JSON", EntityUtils.toString(response.getEntity(), "UTF-8"));
+                    Log.wtf("JSON", EntityUtils.toString(response.getEntity(), "UTF-8"));
 
-                        mProfessorArray = new JSONArray(DUMMY_JSON_ARRAY);
-                        mPopulated = true;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    mProfessorArray = new JSONArray(DUMMY_JSON_ARRAY);
+                    mPopulated = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 mWaitDialog.dismiss();
             }
             return null;
@@ -140,18 +138,17 @@ public class ProfessorListFragment extends ListFragment{
         }
     }
 
-    public ArrayList<String> convertProfJSONArrayToProfArrayList(JSONArray arr){
+    public ArrayList<String> convertProfJSONArrayToProfArrayList(JSONArray arr) {
         ArrayList<String> result = new ArrayList<String>();
 
         try {
             for (int i = 0; i < arr.length(); i++) {
-                String newString = Integer.toString((Integer)(((JSONObject)arr.get(i)).get("id")));
+                String newString = Integer.toString((Integer) (((JSONObject) arr.get(i)).get("id")));
                 newString += ": " + ((JSONObject) arr.get(i)).get("firstName");
                 newString += " " + ((JSONObject) arr.get(i)).get("lastName");
                 result.add(newString);
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

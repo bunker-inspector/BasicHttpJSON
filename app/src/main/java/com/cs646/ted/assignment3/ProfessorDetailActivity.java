@@ -6,10 +6,10 @@ import android.os.Bundle;
 
 public class ProfessorDetailActivity extends Activity {
 
-    public static final String EXTRA_PROF_SELECTED  = "extraprofselected",
-                        SPECIFIC_PROF_URL    = "http://bismarck.sdsu.edu/rateme/instructor/",
-                        RATING_POST_URL      = "http://bismarck.sdsu.edu/rateme/rating/",
-                        COMMENT_POST_URL     = "http://bismarck.sdsu.edu/rateme/comment/";
+    public static final String EXTRA_PROF_SELECTED = "extraprofselected",
+            SPECIFIC_PROF_URL = "http://bismarck.sdsu.edu/rateme/instructor/",
+            RATING_POST_URL = "http://bismarck.sdsu.edu/rateme/rating/",
+            COMMENT_POST_URL = "http://bismarck.sdsu.edu/rateme/comment/";
 
     ProfessorDetailFragment mDetailFragment;
 
