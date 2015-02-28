@@ -6,7 +6,10 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.cs646.ted.assignment3.ProfessorDetailActivity">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/detail_fragment_container"></FrameLayout>
 </RelativeLayout>

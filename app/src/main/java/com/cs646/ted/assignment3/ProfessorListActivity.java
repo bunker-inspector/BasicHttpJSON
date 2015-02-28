@@ -23,7 +23,6 @@ public class ProfessorListActivity extends Activity {
                 .add(R.id.list_fragment_container, mListFragment).commit();
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

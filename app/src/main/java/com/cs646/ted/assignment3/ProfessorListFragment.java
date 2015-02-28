@@ -1,17 +1,17 @@
 package com.cs646.ted.assignment3;
 
-import android.app.Activity;
+import android.app.ListFragment;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.ListAdapter;
-import android.widget.TextView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -19,16 +19,32 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class ProfessorListFragment extends Fragment {
+import java.util.ArrayList;
 
-    private static final String PARAM_PROF_LIST = "paramproflist";
+public class ProfessorListFragment extends ListFragment{
+
+    //UNIT TEST REMOVE ME LATER
+    private static final String DUMMY_JSON_ARRAY = "[{\"firstName\":\"Ted\",\"id\":43,\"lastName\":\"Kassen\"},{\"firstName\":\"Cameron\",\"id\":21,\"lastName\":\"Nouri\"},{\"firstName\":\"Marisa\",\"id\":306,\"lastName\":\"Till\"}]";
+
+    private static final String PARAM_PROF_LIST         = "paramproflist",
+                                STATE_POPULATED         = "statepopulated",
+                                EXTRA_PROF_SELECTED     = "extraprofselected",
+                                PACKAGE_NAME            = "com.cs646.ted.assignment3",
+                                PROF_DETAIL_ACTIVITY    =
+                                        "com.cs646.ted.assignment3.ProfessorDetailActivity";
+
 
     private String mListURL;
+    private ProgressDialog mWaitDialog;
+    private static JSONArray mProfessorArray;
+    private ListView mListView;
+    static boolean mPopulated = false;
 
 //    private OnFragmentInteractionListener mListener;
-    private AbsListView mListView;
-    private ListAdapter mAdapter;
+
 
     public static ProfessorListFragment newInstance(String listURL) {
         ProfessorListFragment fragment = new ProfessorListFragment();
@@ -47,84 +63,106 @@ public class ProfessorListFragment extends Fragment {
         if (getArguments() != null) {
             mListURL = getArguments().getString(PARAM_PROF_LIST);
         }
+    }
 
-        setRetainInstance(true);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (mListURL != null){
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                    .permitAll().build();
+        FetchItemsTask fetchItemsTask = new FetchItemsTask();
+        fetchItemsTask.execute();
 
-            StrictMode.setThreadPolicy(policy);
-
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(mListURL);
-            HttpResponse response;
-
-            try{
-                response = httpClient.execute(httpGet);
-
-                Log.wtf("JSON", EntityUtils.toString(response.getEntity(), "UTF-8"));
-            }
-            catch (Exception e){
-                e.printStackTrace();
-            }
+        if(!mPopulated) {
+            mWaitDialog = ProgressDialog.show(getActivity(), getString(R.string.loading_title),
+                    getString(R.string.please_wait));
         }
+        mListView = getListView();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_professor, container, false);
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
 
-        // Set the adapter
-        mListView = (AbsListView) view.findViewById(android.R.id.list);
-        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+        Intent go = new Intent();
+        go.setClassName(PACKAGE_NAME, PROF_DETAIL_ACTIVITY);
 
-        // Set OnItemClickListener so we can be notified on item clicks
-//        mListView.setOnItemClickListener(this);
+        try {
+            int idOfSelectedProfessor =
+                    ((Integer)((JSONObject) mProfessorArray.get(position)).get("id"));
 
-        return view;
+            Toast.makeText(getActivity(), Integer.toString(idOfSelectedProfessor),
+                    Toast.LENGTH_SHORT).show();
+
+            go.putExtra(EXTRA_PROF_SELECTED, idOfSelectedProfessor);
+            startActivity(go);
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+
+
     }
 
-//    @Override
-//    public void onAttach(Activity activity) {
-//        super.onAttach(activity);
-//        try {
-//            mListener = (OnFragmentInteractionListener) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
+    //Fetches JSONArray from URL
+    private class FetchItemsTask extends AsyncTask<Void, Void, Void>{
+        @Override
+        protected Void doInBackground(Void... params) {
+            if (!mPopulated) {
+                if (mListURL != null) {
+                    HttpClient httpClient = new DefaultHttpClient();
+                    HttpGet httpGet = new HttpGet(mListURL);
+                    HttpResponse response;
 
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
-//
-//    @Override
-//    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//        if (null != mListener) {
-//            // Notify the active callbacks interface (the activity, if the
-//            // fragment is attached to one) that an item has been selected.
-//        }
-//    }
+                    try {
+                        response = httpClient.execute(httpGet);
 
-    public void setEmptyText(CharSequence emptyText) {
-        View emptyView = mListView.getEmptyView();
+                        Log.wtf("JSON", EntityUtils.toString(response.getEntity(), "UTF-8"));
 
-        if (emptyView instanceof TextView) {
-            ((TextView) emptyView).setText(emptyText);
+                        mProfessorArray = new JSONArray(DUMMY_JSON_ARRAY);
+                        mPopulated = true;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                mWaitDialog.dismiss();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            ArrayList<String> professorArrayList =
+                    convertProfJSONArrayToProfArrayList(mProfessorArray);
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                    android.R.layout.simple_list_item_activated_1,
+                    professorArrayList);
+            setListAdapter(adapter);
         }
     }
 
-//    public interface OnFragmentInteractionListener {
-//        public void onFragmentInteraction(String id);
-//    }
+    public ArrayList<String> convertProfJSONArrayToProfArrayList(JSONArray arr){
+        ArrayList<String> result = new ArrayList<String>();
+
+        try {
+            for (int i = 0; i < arr.length(); i++) {
+                String newString = Integer.toString((Integer)(((JSONObject)arr.get(i)).get("id")));
+                newString += ": " + ((JSONObject) arr.get(i)).get("firstName");
+                newString += " " + ((JSONObject) arr.get(i)).get("lastName");
+                result.add(newString);
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
 }
