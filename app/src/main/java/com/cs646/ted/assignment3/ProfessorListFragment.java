@@ -81,7 +81,6 @@ public class ProfessorListFragment extends ListFragment{
             mWaitDialog = ProgressDialog.show(getActivity(), getString(R.string.loading_title),
                     getString(R.string.please_wait));
         }
-        mListView = getListView();
     }
 
     @Override
@@ -94,10 +93,6 @@ public class ProfessorListFragment extends ListFragment{
         try {
             int idOfSelectedProfessor =
                     ((Integer)((JSONObject) mProfessorArray.get(position)).get("id"));
-
-            Toast.makeText(getActivity(), Integer.toString(idOfSelectedProfessor),
-                    Toast.LENGTH_SHORT).show();
-
             go.putExtra(EXTRA_PROF_SELECTED, idOfSelectedProfessor);
             startActivity(go);
         }
@@ -113,7 +108,6 @@ public class ProfessorListFragment extends ListFragment{
         @Override
         protected Void doInBackground(Void... params) {
             if (!mPopulated) {
-                if (mListURL != null) {
                     HttpClient httpClient = new DefaultHttpClient();
                     HttpGet httpGet = new HttpGet(mListURL);
                     HttpResponse response;
@@ -128,7 +122,6 @@ public class ProfessorListFragment extends ListFragment{
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }
                 mWaitDialog.dismiss();
             }
             return null;
