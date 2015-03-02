@@ -277,7 +277,6 @@ public class ProfessorDetailFragment extends Fragment {
 
                 DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
                 Date date = new Date();
-                System.out.println(dateFormat.format(date));
 
                 JSONObject newComment = new JSONObject();
                 try {
