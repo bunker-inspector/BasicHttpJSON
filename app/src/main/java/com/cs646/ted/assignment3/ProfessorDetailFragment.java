@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +36,7 @@ public class ProfessorDetailFragment extends Fragment {
             RATING = "rating",
             AVERAGE = "average",
             TOTAL = "totalRatings";
-    //unit test remove later
-    private static final String DUMMY_JSON_OBJECT = "{\"id\":2,\"office\":\"GMCS407B\",\"phone\":\"619-594-6191\",\"email\":\"beck@cs.sdsu.edu\",\"rating\":{\"average\":5.0,\"totalRatings\":12},\"firstName\":\"Dr.Leland\",\"lastName\":\"Beck\"}";
+
     private int mProfessorId;
     private String mProfessorURL, mRatingURL, mCommentURL;
     private boolean mPopulated;
@@ -148,13 +146,13 @@ public class ProfessorDetailFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             try {
-                placeValues(mProfessorObject);
+                placeValues();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
-        private void placeValues(JSONObject obj) throws JSONException {
+        private void placeValues() throws JSONException {
             mFirstName.setText((String) mProfessorObject.get(FIRST_NAME));
             mLastName.setText((String) mProfessorObject.get(LAST_NAME));
             mOffice.setText((String) mProfessorObject.get(OFFICE));
@@ -215,15 +213,14 @@ public class ProfessorDetailFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            if(mNewRating != null){
+            if (mNewRating != null) {
                 try {
                     Double average = (Double) mNewRating.get(AVERAGE);
                     Integer total = (Integer) mNewRating.get(TOTAL);
 
                     mAverageRating.setText("Average " + Double.toString(average) + " of " +
                             Integer.toString(total) + " ratings");
-                }
-                catch(JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
