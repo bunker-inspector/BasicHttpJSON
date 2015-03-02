@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,19 +19,16 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ProfessorDetailFragment extends Fragment {
 
-    //unit test remove later
-    private static final String DUMMY_JSON_OBJECT = "{\"id\":2,\"office\":\"GMCS407B\",\"phone\":\"619-594-6191\",\"email\":\"beck@cs.sdsu.edu\",\"rating\":{\"average\":5.0,\"totalRatings\":12},\"firstName\":\"Dr.Leland\",\"lastName\":\"Beck\"}";
-
     public static final String ARG_SEL_PROFESSOR_ID = "idofprofessorselected",
             ARG_PROFESSOR_GET_URL = "progfurl",
             ARG_RATING_POST_URL = "ratingpurl",
             ARG_COMMENT_POST_URL = "commentpurl";
-
     public static final String FIRST_NAME = "firstName",
             LAST_NAME = "lastName",
             OFFICE = "office",
@@ -39,8 +37,8 @@ public class ProfessorDetailFragment extends Fragment {
             RATING = "rating",
             AVERAGE = "average",
             TOTAL = "totalRatings";
-
-
+    //unit test remove later
+    private static final String DUMMY_JSON_OBJECT = "{\"id\":2,\"office\":\"GMCS407B\",\"phone\":\"619-594-6191\",\"email\":\"beck@cs.sdsu.edu\",\"rating\":{\"average\":5.0,\"totalRatings\":12},\"firstName\":\"Dr.Leland\",\"lastName\":\"Beck\"}";
     private int mProfessorId;
     private String mProfessorURL, mRatingURL, mCommentURL;
     private boolean mPopulated;
@@ -49,6 +47,9 @@ public class ProfessorDetailFragment extends Fragment {
     private TextView mLastName, mFirstName, mOffice, mPhone, mEmail, mAverageRating;
     private RatingBar mRating;
     private EditText mCommentEdit;
+
+    public ProfessorDetailFragment() {
+    }
 
     public static ProfessorDetailFragment newInstance(int idOfProfSelected, String professorURL,
                                                       String ratingURL, String commentURL) {
@@ -60,9 +61,6 @@ public class ProfessorDetailFragment extends Fragment {
         args.putString(ARG_COMMENT_POST_URL, commentURL);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public ProfessorDetailFragment() {
     }
 
     @Override
@@ -99,11 +97,11 @@ public class ProfessorDetailFragment extends Fragment {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mWaitDialog = ProgressDialog.show(getActivity(), getString(R.string.loading_title),
-                        getString(R.string.please_wait));
-
                 CommentAndSubmitRating commentAndSubmitRating = new CommentAndSubmitRating();
                 commentAndSubmitRating.execute();
+
+                mWaitDialog = ProgressDialog.show(getActivity(), getString(R.string.sending),
+                        getString(R.string.please_wait));
             }
         });
     }
@@ -135,9 +133,8 @@ public class ProfessorDetailFragment extends Fragment {
                 try {
                     response = httpClient.execute(httpGet);
 
-                    //Log.wtf("JSON", EntityUtils.toString(response.getEntity(), "UTF-8"));
-
-                    mProfessorObject = new JSONObject(DUMMY_JSON_OBJECT);
+                    mProfessorObject =
+                            new JSONObject(EntityUtils.toString(response.getEntity(), "UTF-8"));
                     mPopulated = true;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -173,41 +170,63 @@ public class ProfessorDetailFragment extends Fragment {
     }
 
     private class CommentAndSubmitRating extends AsyncTask<Void, Void, Void> {
+        JSONObject mNewRating;
+
         @Override
         protected Void doInBackground(Void... params) {
-            if (!mPopulated) {
-                HttpClient httpClient = new DefaultHttpClient();
+            String commentToSend = mCommentEdit.getText().toString();
+            Integer ratingToSend = mRating.getNumStars();
 
-                String postRatingURL = mRatingURL + Integer.toString(mProfessorId) + "/" +
-                        Integer.toString(mRating.getNumStars());
+            HttpClient httpClient = new DefaultHttpClient();
+            String postRatingURL = mRatingURL + Integer.toString(mProfessorId) + "/" +
+                    Integer.toString(ratingToSend);
 
-                String postCommentURL = mCommentURL + Integer.toString(mProfessorId);
+            String postCommentURL = mCommentURL + Integer.toString(mProfessorId);
 
-                HttpPost httpRatingPost = new HttpPost(postRatingURL);
-                HttpPost httpCommentPost = new HttpPost(postCommentURL);
+            HttpPost httpRatingPost = new HttpPost(postRatingURL);
+            HttpPost httpCommentPost = new HttpPost(postCommentURL);
 
-                try {
-                    httpCommentPost.setEntity(new StringEntity(mCommentEdit.getText().toString()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                HttpResponse ratingResponse, commentResponse;
-
-                try {
-                    commentResponse = httpClient.execute(httpCommentPost);
-                    ratingResponse = httpClient.execute(httpRatingPost);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                mWaitDialog.dismiss();
+            try {
+                httpCommentPost.setEntity(new StringEntity(commentToSend));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
+            HttpResponse ratingResponse, commentResponse;
+
+            try {
+                if (commentToSend != null) {
+                    commentResponse = httpClient.execute(httpCommentPost);
+                    EntityUtils.toString(commentResponse.getEntity(), "UTF-8");
+                }
+                if (ratingToSend >= 1) {
+                    ratingResponse = httpClient.execute(httpRatingPost);
+                    mNewRating = new JSONObject(EntityUtils
+                            .toString(ratingResponse.getEntity(), "UTF-8"));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            mWaitDialog.dismiss();
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+
+            if(mNewRating != null){
+                try {
+                    Double average = (Double) mNewRating.get(AVERAGE);
+                    Integer total = (Integer) mNewRating.get(TOTAL);
+
+                    mAverageRating.setText("Average " + Double.toString(average) + " of " +
+                            Integer.toString(total) + " ratings");
+                }
+                catch(JSONException e){
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
