@@ -2,6 +2,7 @@ package com.cs646.ted.assignment3;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.WindowManager;
 
 
 public class ProfessorDetailActivity extends Activity {
@@ -26,5 +27,7 @@ public class ProfessorDetailActivity extends Activity {
 
         getFragmentManager().beginTransaction()
                 .add(R.id.detail_fragment_container, mDetailFragment).commit();
+
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 }
