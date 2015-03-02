@@ -1,199 +1,224 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:configChanges="keyboardHidden|orientation|screenSize"
     tools:context="com.cs646.ted.assignment3.ProfessorDetailFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:id="@+id/first_name_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:id="@+id/first_name_layout">
+            android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/first_name"
                 android:id="@+id/first_name_label"
-                android:layout_weight="3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingRight="10sp"
+                android:text="@string/first_name"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/first_name_value"
-                android:layout_weight="1" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:id="@+id/last_name_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:id="@+id/last_name_layout">
+            android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/last_name"
                 android:id="@+id/last_name_label"
-                android:layout_weight="3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingRight="10sp"
+                android:text="@string/last_name"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/last_name_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/last_name_value"
-                android:layout_weight="1" />
+                android:layout_gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:id="@+id/office_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:id="@+id/office_layout">
+            android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/office"
                 android:id="@+id/office_label"
-                android:layout_weight="3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingRight="10sp"
+                android:text="@string/office"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/office_value"
-                android:layout_weight="1" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:id="@+id/phone_layout"
-            android:layout_weight="1">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/phone"
-                android:id="@+id/phone_label"
-                android:layout_weight="3"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/phone_value"
-                android:layout_weight="1" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/email_layout"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/phone_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingRight="10sp"
+                android:text="@string/phone"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/e_mail"
-                android:id="@+id/email_label"
-                android:layout_weight="3"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/phone_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/email_value"
-                android:layout_weight="1" />
+                android:layout_gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
+            android:id="@+id/email_layout"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/rating_layout"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/email_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingRight="10sp"
+                android:text="@string/e_mail"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/rating"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/email_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rating_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="53dp"
+            android:orientation="horizontal">
+
+            <TextView
                 android:id="@+id/rating_label"
-                android:layout_weight="3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingRight="10sp"
+                android:text="@string/rating"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
 
             <RatingBar
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/rating_value"
-                android:stepSize="1"
-                android:padding="5dp" />
+                android:layout_width="252dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="5dp"
+                android:stepSize="1" />
 
         </LinearLayout>
 
         <TextView
+            android:id="@+id/average_rating"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:id="@+id/average_rating"
-            android:singleLine="true"
-            android:padding="5dp"
             android:layout_gravity="center"
-            android:gravity="center" />
+            android:gravity="center"
+            android:padding="5dp"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:id="@+id/comments_layout"
-            android:layout_weight="1">
+            android:layout_width="match_parent"
+            android:layout_height="62dp"
+            android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/comment_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_gravity="center"
+                android:paddingRight="10sp"
                 android:text="@string/comments"
-                android:id="@+id/comment_label"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
 
             <EditText
+                android:id="@+id/comment_value"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/comment_value"
+                android:layout_gravity="center"
                 android:hint="@string/comment_hint" />
 
         </LinearLayout>
 
-        <Button
-            android:layout_width="match_parent"
+        <ListView
+            android:id="@+id/comment_list_view"
+            android:layout_width="fill_parent"
+            android:layout_height="103dp" />
+
+        <LinearLayout
+            android:id="@+id/buttons_layout"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/submit"
-            android:id="@+id/submit_button" />
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/submit_button"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/submit" />
+
+        </LinearLayout>
 
     </LinearLayout>
+
 </FrameLayout>
