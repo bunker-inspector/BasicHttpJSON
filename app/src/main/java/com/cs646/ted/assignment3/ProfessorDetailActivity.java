@@ -8,8 +8,9 @@ public class ProfessorDetailActivity extends Activity {
 
     public static final String EXTRA_PROF_SELECTED = "extraprofselected",
             SPECIFIC_PROF_URL = "http://bismarck.sdsu.edu/rateme/instructor/",
-            RATING_POST_URL = "http://bismarck.sdsu.edu/rateme/rating/",
-            COMMENT_POST_URL = "http://bismarck.sdsu.edu/rateme/comment/";
+            RATING_URL = "http://bismarck.sdsu.edu/rateme/rating/",
+            COMMENT_POST_URL = "http://bismarck.sdsu.edu/rateme/comment/",
+            COMMENTS_GET_URL = "http://bismarck.sdsu.edu/rateme/comments/";
 
     ProfessorDetailFragment mDetailFragment;
 
@@ -21,7 +22,7 @@ public class ProfessorDetailActivity extends Activity {
         int professorSelected = getIntent().getIntExtra(EXTRA_PROF_SELECTED, 0);
 
         mDetailFragment = ProfessorDetailFragment.newInstance(professorSelected, SPECIFIC_PROF_URL,
-                RATING_POST_URL, COMMENT_POST_URL);
+                RATING_URL, COMMENT_POST_URL, COMMENTS_GET_URL);
 
         getFragmentManager().beginTransaction()
                 .add(R.id.detail_fragment_container, mDetailFragment).commit();
