@@ -25,7 +25,6 @@ import java.util.ArrayList;
 public class ProfessorListFragment extends ListFragment {
 
     private static final String PARAM_PROF_LIST = "paramproflist",
-            STATE_POPULATED = "statepopulated",
             EXTRA_PROF_SELECTED = "extraprofselected",
             PACKAGE_NAME = "com.cs646.ted.assignment3",
             PROF_DETAIL_ACTIVITY =
@@ -34,6 +33,7 @@ public class ProfessorListFragment extends ListFragment {
     private static JSONArray mProfessorArray;
     private String mListURL;
     private ProgressDialog mWaitDialog;
+    private HttpClient mHTTPClient;
 
     public ProfessorListFragment() {
     }
@@ -63,6 +63,8 @@ public class ProfessorListFragment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        mHTTPClient = new DefaultHttpClient();
+
         FetchItemsTask fetchItemsTask = new FetchItemsTask();
         fetchItemsTask.execute();
 
@@ -70,6 +72,12 @@ public class ProfessorListFragment extends ListFragment {
             mWaitDialog = ProgressDialog.show(getActivity(), getString(R.string.loading_title),
                     getString(R.string.please_wait));
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mHTTPClient.getConnectionManager().shutdown();
     }
 
     @Override
@@ -113,12 +121,12 @@ public class ProfessorListFragment extends ListFragment {
         @Override
         protected Void doInBackground(Void... params) {
             if (!mPopulated) {
-                HttpClient httpClient = new DefaultHttpClient();
+                mHTTPClient = new DefaultHttpClient();
                 HttpGet httpGet = new HttpGet(mListURL);
                 HttpResponse response;
 
                 try {
-                    response = httpClient.execute(httpGet);
+                    response = mHTTPClient.execute(httpGet);
 
                     mProfessorArray =
                             new JSONArray(EntityUtils.toString(response.getEntity(), "UTF-8"));
