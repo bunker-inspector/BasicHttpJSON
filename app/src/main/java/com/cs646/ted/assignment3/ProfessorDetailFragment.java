@@ -58,6 +58,7 @@ public class ProfessorDetailFragment extends Fragment {
     private TextView mLastName, mFirstName, mOffice, mPhone, mEmail, mAverageRating;
     private RatingBar mRating;
     private EditText mCommentEdit;
+    private HttpClient mHTTPClient;
 
     public ProfessorDetailFragment() {
     }
@@ -95,6 +96,12 @@ public class ProfessorDetailFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        mHTTPClient.getConnectionManager().shutdown();
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -123,6 +130,8 @@ public class ProfessorDetailFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        mHTTPClient = new DefaultHttpClient();
 
         FetchProfessorDetails fetchProfessorDetails = new FetchProfessorDetails();
         fetchProfessorDetails.execute();
@@ -156,7 +165,6 @@ public class ProfessorDetailFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... params) {
             if (!mPopulated) {
-                HttpClient httpClient = new DefaultHttpClient();
 
                 String specificURL = mProfessorURL + Integer.toString(mProfessorId);
                 String commentsURL = mCommentsURL + Integer.toString(mProfessorId);
@@ -166,13 +174,13 @@ public class ProfessorDetailFragment extends Fragment {
                 HttpResponse detailsResponse, commentResponse;
 
                 try {
-                    detailsResponse = httpClient.execute(httpProfessorDetailsGet);
+                    detailsResponse = mHTTPClient.execute(httpProfessorDetailsGet);
 
                     mProfessorObject =
                             new JSONObject(EntityUtils
                                     .toString(detailsResponse.getEntity(), "UTF-8"));
 
-                    commentResponse = httpClient.execute(httpProfessorCommentsGet);
+                    commentResponse = mHTTPClient.execute(httpProfessorCommentsGet);
 
                     mCommentsArray =
                             new JSONArray(EntityUtils
@@ -223,7 +231,6 @@ public class ProfessorDetailFragment extends Fragment {
             mNewComment = mCommentEdit.getText().toString();
             Integer ratingToSend = mRating.getNumStars();
 
-            HttpClient httpClient = new DefaultHttpClient();
             String postRatingURL = mRatingURL + Integer.toString(mProfessorId) + "/" +
                     Integer.toString(ratingToSend);
 
@@ -242,11 +249,11 @@ public class ProfessorDetailFragment extends Fragment {
 
             try {
                 if (mNewComment != null) {
-                    commentResponse = httpClient.execute(httpCommentPost);
+                    commentResponse = mHTTPClient.execute(httpCommentPost);
                     EntityUtils.toString(commentResponse.getEntity(), "UTF-8");
                 }
                 if (ratingToSend >= 1) {
-                    ratingResponse = httpClient.execute(httpRatingPost);
+                    ratingResponse = mHTTPClient.execute(httpRatingPost);
                     mNewRating = new JSONObject(EntityUtils
                             .toString(ratingResponse.getEntity(), "UTF-8"));
                 }
